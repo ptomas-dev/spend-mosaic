@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Security
 
 - Updated locked versions of React Router to 6.30.6 and nanoid to 3.3.18 to address npm audit vulnerabilities.
+- Updated `react-router-dom` to `^7.18.4` to address GHSA-wrjc-x8rr-h8h6 and GHSA-337j-9hxr-rhxg.
 
 ## [0.1.4] - 2026-08-03
 
