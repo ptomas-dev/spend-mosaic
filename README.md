@@ -171,9 +171,9 @@ Workspaces simplify dependency management by:
 - **Frontend**: Deployed on [Vercel](https://vercel.com/).
 - **Backend**: Deployed on [Heroku](https://www.heroku.com/).
 
-## Contributing
+## Development Workflow
 
-As this is a personal project, contributions are not currently accepted. However, feedback and suggestions are welcome.
+See [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) for the Git workflow used to maintain this project.
 
 ## License
 
