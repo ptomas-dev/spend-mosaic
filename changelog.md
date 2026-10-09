@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file. The format 
 ### Added
 
 - Added repository instructions for GitHub Copilot.
+- Connected the expenses page to the backend for listing and creating expenses.
+- Added a Vite development proxy for the expenses API.
+- Added income model and API endpoints for listing and creating income.
+- Connected the income page to the backend and added its Vite development proxy.
+- Added confirmed deletion of expenses and income from their lists.
+- Added income editing through the update API and page form.
+- Added expense editing through the update API and page form.
 
 ### Security
 
