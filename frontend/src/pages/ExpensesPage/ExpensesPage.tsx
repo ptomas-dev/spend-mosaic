@@ -28,12 +28,12 @@ const initialForm: ExpenseForm = {
   memo: "",
 };
 
-const currencyFormatter = new Intl.NumberFormat("pt-PT", {
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "EUR",
 });
 
-const dateFormatter = new Intl.DateTimeFormat("pt-PT", {
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   dateStyle: "medium",
 });
 
@@ -42,7 +42,7 @@ const getErrorMessage = async (response: Response) => {
     error?: string;
   } | null;
 
-  return body?.error ?? "Não foi possível comunicar com o servidor.";
+  return body?.error ?? "Could not communicate with the server.";
 };
 
 const ExpensesPage = () => {
@@ -75,7 +75,7 @@ const ExpensesPage = () => {
           setListError(
             loadError instanceof Error
               ? loadError.message
-              : "Não foi possível carregar as despesas.",
+              : "Could not load expenses.",
           );
         }
       } finally {
@@ -116,7 +116,7 @@ const ExpensesPage = () => {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Não foi possível guardar a despesa.",
+          : "Could not save the expense.",
       );
     } finally {
       setIsSubmitting(false);
@@ -124,7 +124,7 @@ const ExpensesPage = () => {
   };
 
   const handleDelete = async (expense: Expense) => {
-    if (!window.confirm(`Apagar a despesa "${expense.category}"?`)) {
+    if (!window.confirm(`Delete the expense "${expense.category}"?`)) {
       return;
     }
 
@@ -149,7 +149,7 @@ const ExpensesPage = () => {
       setDeleteError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Não foi possível apagar a despesa.",
+          : "Could not delete the expense.",
       );
     } finally {
       setDeletingId(null);
@@ -164,12 +164,12 @@ const ExpensesPage = () => {
   return (
     <section className='mx-auto w-full max-w-5xl space-y-8'>
       <header className='border-b border-slate-700 pb-5'>
-        <p className='text-sm font-medium uppercase tracking-wide text-emerald-400'>
-          Movimentos
+        <p className='text-sm font-medium uppercase tracking-wide text-rose-400'>
+          EXPENSES
         </p>
-        <h1 className='mt-2 text-3xl font-semibold text-white'>Despesas</h1>
+        <h1 className='mt-2 text-3xl font-semibold text-white'>Expenses</h1>
         <p className='mt-2 text-sm text-slate-300'>
-          Regista e consulta as tuas despesas.
+          Track and review your expenses.
         </p>
       </header>
 
@@ -179,17 +179,17 @@ const ExpensesPage = () => {
             id='new-expense-heading'
             className='text-xl font-semibold text-white'
           >
-            Nova despesa
+            New expense
           </h2>
           <p className='mt-1 text-sm text-slate-300'>
-            Os campos assinalados são obrigatórios.
+            Fields marked as required must be completed.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='grid gap-4 sm:grid-cols-2'>
             <label className='space-y-1.5 text-sm text-slate-200'>
-              <span>Data</span>
+              <span>Date</span>
               <input
                 required
                 type='date'
@@ -205,7 +205,7 @@ const ExpensesPage = () => {
             </label>
 
             <label className='space-y-1.5 text-sm text-slate-200'>
-              <span>Valor (€)</span>
+              <span>Amount (€) *</span>
               <input
                 required
                 min='0.01'
@@ -219,13 +219,13 @@ const ExpensesPage = () => {
                     amount: event.target.value,
                   }))
                 }
-                placeholder='0,00'
+                placeholder='0.00'
                 className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
               />
             </label>
 
             <label className='space-y-1.5 text-sm text-slate-200'>
-              <span>Categoria</span>
+              <span>Category *</span>
               <input
                 required
                 maxLength={255}
@@ -236,14 +236,14 @@ const ExpensesPage = () => {
                     category: event.target.value,
                   }))
                 }
-                placeholder='Ex.: Alimentação'
+                placeholder='e.g. Groceries'
                 className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
               />
             </label>
 
             <label className='space-y-1.5 text-sm text-slate-200'>
               <span>
-                Nota <span className='text-slate-400'>(opcional)</span>
+                Note <span className='text-slate-400'>(optional)</span>
               </span>
               <input
                 maxLength={255}
@@ -254,7 +254,7 @@ const ExpensesPage = () => {
                     memo: event.target.value,
                   }))
                 }
-                placeholder='Detalhes adicionais'
+                placeholder='Additional details'
                 className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
               />
             </label>
@@ -269,9 +269,9 @@ const ExpensesPage = () => {
           <button
             type='submit'
             disabled={isSubmitting}
-            className='rounded bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-60'
+            className='rounded bg-rose-400 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-rose-300 disabled:cursor-wait disabled:opacity-60'
           >
-            {isSubmitting ? "A guardar..." : "Adicionar despesa"}
+            {isSubmitting ? "Saving..." : "Add expense"}
           </button>
         </form>
       </section>
@@ -283,16 +283,16 @@ const ExpensesPage = () => {
               id='expense-list-heading'
               className='text-xl font-semibold text-white'
             >
-              Despesas registadas
+              Recorded expenses
             </h2>
             <p className='mt-1 text-sm text-slate-300'>
               {expenses.length}{" "}
-              {expenses.length === 1 ? "movimento" : "movimentos"}
+              {expenses.length === 1 ? "transaction" : "transactions"}
             </p>
           </div>
           <p className='text-lg font-semibold text-white'>
             Total{" "}
-            <span className='text-emerald-300'>
+            <span className='text-rose-400'>
               {currencyFormatter.format(total)}
             </span>
           </p>
@@ -306,7 +306,7 @@ const ExpensesPage = () => {
 
         {isLoading ? (
           <p role='status' className='py-6 text-sm text-slate-300'>
-            A carregar despesas...
+            Loading expenses...
           </p>
         ) : listError ? (
           <p role='alert' className='py-6 text-sm text-rose-300'>
@@ -314,7 +314,7 @@ const ExpensesPage = () => {
           </p>
         ) : expenses.length === 0 ? (
           <p className='py-6 text-sm text-slate-300'>
-            Ainda não existem despesas registadas.
+            No expenses recorded yet.
           </p>
         ) : (
           <ul className='divide-y divide-slate-700'>
@@ -337,9 +337,30 @@ const ExpensesPage = () => {
                   type='button'
                   disabled={deletingId === expense.id}
                   onClick={() => void handleDelete(expense)}
-                  className='justify-self-start rounded border border-rose-400/60 px-3 py-1.5 text-sm text-rose-200 transition-colors hover:bg-rose-400/10 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
+                  aria-label={
+                    deletingId === expense.id
+                      ? "Deleting expense"
+                      : `Delete ${expense.category}`
+                  }
+                  title={`Delete ${expense.category}`}
+                  aria-busy={deletingId === expense.id}
+                  className='inline-flex h-8 w-8 items-center justify-center justify-self-start rounded border border-rose-400/60 text-rose-200 transition-colors hover:bg-rose-400/10 focus:outline-none focus:ring-2 focus:ring-rose-300 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
                 >
-                  {deletingId === expense.id ? "A apagar..." : "Apagar"}
+                  <svg
+                    aria-hidden='true'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    className='h-4 w-4'
+                  >
+                    <path d='M3 6h18' />
+                    <path d='M8 6V4h8v2' />
+                    <path d='m19 6-1 14H6L5 6' />
+                    <path d='M10 11v5M14 11v5' />
+                  </svg>
                 </button>
               </li>
             ))}

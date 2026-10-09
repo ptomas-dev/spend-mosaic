@@ -30,12 +30,12 @@ const createInitialForm = (): IncomeForm => ({
   memo: "",
 });
 
-const currencyFormatter = new Intl.NumberFormat("pt-PT", {
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "EUR",
 });
 
-const dateFormatter = new Intl.DateTimeFormat("pt-PT", {
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   dateStyle: "medium",
 });
 
@@ -44,7 +44,7 @@ const getErrorMessage = async (response: Response) => {
     error?: string;
   } | null;
 
-  return body?.error ?? "Não foi possível comunicar com o servidor.";
+  return body?.error ?? "Could not communicate with the server.";
 };
 
 const IncomePage = () => {
@@ -75,7 +75,7 @@ const IncomePage = () => {
           setListError(
             loadError instanceof Error
               ? loadError.message
-              : "Não foi possível carregar as receitas.",
+              : "Could not load income.",
           );
         }
       } finally {
@@ -116,7 +116,7 @@ const IncomePage = () => {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Não foi possível guardar a receita.",
+          : "Could not save the income.",
       );
     } finally {
       setIsSubmitting(false);
@@ -124,7 +124,7 @@ const IncomePage = () => {
   };
 
   const handleDelete = async (income: Income) => {
-    if (!window.confirm(`Apagar a receita "${income.category}"?`)) {
+    if (!window.confirm(`Delete the income "${income.category}"?`)) {
       return;
     }
 
@@ -149,7 +149,7 @@ const IncomePage = () => {
       setDeleteError(
         deleteError instanceof Error
           ? deleteError.message
-          : "Não foi possível apagar a receita.",
+          : "Could not delete the income.",
       );
     } finally {
       setDeletingId(null);
@@ -162,11 +162,11 @@ const IncomePage = () => {
     <section className='mx-auto w-full max-w-5xl space-y-8'>
       <header className='border-b border-slate-700 pb-5'>
         <p className='text-sm font-medium uppercase tracking-wide text-emerald-400'>
-          Movimentos
+          INCOME
         </p>
-        <h1 className='mt-2 text-3xl font-semibold text-white'>Receitas</h1>
+        <h1 className='mt-2 text-3xl font-semibold text-white'>Income</h1>
         <p className='mt-2 text-sm text-slate-300'>
-          Regista e consulta as tuas receitas.
+          Track and review your income.
         </p>
       </header>
 
@@ -176,17 +176,17 @@ const IncomePage = () => {
             id='new-income-heading'
             className='text-xl font-semibold text-white'
           >
-            Nova receita
+            New income
           </h2>
           <p className='mt-1 text-sm text-slate-300'>
-            Os campos assinalados são obrigatórios.
+            Fields marked as required must be completed.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='grid gap-4 sm:grid-cols-2'>
             <label className='space-y-1.5 text-sm text-slate-200'>
-              <span>Data</span>
+              <span>Date</span>
               <input
                 required
                 type='date'
@@ -202,7 +202,7 @@ const IncomePage = () => {
             </label>
 
             <label className='space-y-1.5 text-sm text-slate-200'>
-              <span>Valor (€)</span>
+              <span>Amount (€) *</span>
               <input
                 required
                 min='0.01'
@@ -216,13 +216,13 @@ const IncomePage = () => {
                     amount: event.target.value,
                   }))
                 }
-                placeholder='0,00'
+                placeholder='0.00'
                 className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
               />
             </label>
 
             <label className='space-y-1.5 text-sm text-slate-200'>
-              <span>Categoria</span>
+              <span>Category *</span>
               <input
                 required
                 maxLength={255}
@@ -233,14 +233,14 @@ const IncomePage = () => {
                     category: event.target.value,
                   }))
                 }
-                placeholder='Ex.: Salário'
+                placeholder='e.g. Salary'
                 className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
               />
             </label>
 
             <label className='space-y-1.5 text-sm text-slate-200'>
               <span>
-                Nota <span className='text-slate-400'>(opcional)</span>
+                Note <span className='text-slate-400'>(optional)</span>
               </span>
               <input
                 maxLength={255}
@@ -251,7 +251,7 @@ const IncomePage = () => {
                     memo: event.target.value,
                   }))
                 }
-                placeholder='Detalhes adicionais'
+                placeholder='Additional details'
                 className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
               />
             </label>
@@ -268,7 +268,7 @@ const IncomePage = () => {
             disabled={isSubmitting}
             className='rounded bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-60'
           >
-            {isSubmitting ? "A guardar..." : "Adicionar receita"}
+            {isSubmitting ? "Saving..." : "Add income"}
           </button>
         </form>
       </section>
@@ -280,11 +280,11 @@ const IncomePage = () => {
               id='income-list-heading'
               className='text-xl font-semibold text-white'
             >
-              Receitas registadas
+              Recorded income
             </h2>
             <p className='mt-1 text-sm text-slate-300'>
               {incomes.length}{" "}
-              {incomes.length === 1 ? "movimento" : "movimentos"}
+              {incomes.length === 1 ? "transaction" : "transactions"}
             </p>
           </div>
           <p className='text-lg font-semibold text-white'>
@@ -303,16 +303,14 @@ const IncomePage = () => {
 
         {isLoading ? (
           <p role='status' className='py-6 text-sm text-slate-300'>
-            A carregar receitas...
+            Loading income...
           </p>
         ) : listError ? (
           <p role='alert' className='py-6 text-sm text-rose-300'>
             {listError}
           </p>
         ) : incomes.length === 0 ? (
-          <p className='py-6 text-sm text-slate-300'>
-            Ainda não existem receitas registadas.
-          </p>
+          <p className='py-6 text-sm text-slate-300'>No income recorded yet.</p>
         ) : (
           <ul className='divide-y divide-slate-700'>
             {incomes.map((income) => (
@@ -334,9 +332,30 @@ const IncomePage = () => {
                   type='button'
                   disabled={deletingId === income.id}
                   onClick={() => void handleDelete(income)}
-                  className='justify-self-start rounded border border-rose-400/60 px-3 py-1.5 text-sm text-rose-200 transition-colors hover:bg-rose-400/10 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
+                  aria-label={
+                    deletingId === income.id
+                      ? "Deleting income"
+                      : `Delete ${income.category}`
+                  }
+                  title={`Delete ${income.category}`}
+                  aria-busy={deletingId === income.id}
+                  className='inline-flex h-8 w-8 items-center justify-center justify-self-start rounded border border-rose-400/60 text-rose-200 transition-colors hover:bg-rose-400/10 focus:outline-none focus:ring-2 focus:ring-rose-300 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
                 >
-                  {deletingId === income.id ? "A apagar..." : "Apagar"}
+                  <svg
+                    aria-hidden='true'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    className='h-4 w-4'
+                  >
+                    <path d='M3 6h18' />
+                    <path d='M8 6V4h8v2' />
+                    <path d='m19 6-1 14H6L5 6' />
+                    <path d='M10 11v5M14 11v5' />
+                  </svg>
                 </button>
               </li>
             ))}
