@@ -1,7 +1,7 @@
-import React from "react";
+import type { PropsWithChildren } from "react";
 
-const Content = ({ children }) => {
-  return <main className="flex-1 p-6">{children}</main>;
+const Content = ({ children }: PropsWithChildren) => {
+  return <main className='flex-1 p-6'>{children}</main>;
 };
 
 export default Content;
