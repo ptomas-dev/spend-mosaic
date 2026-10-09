@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file. The format 
 - Added income model and API endpoints for listing and creating income.
 - Connected the income page to the backend and added its Vite development proxy.
 - Added confirmed deletion of expenses and income from their lists.
+- Added income editing through the update API and page form.
+- Added expense editing through the update API and page form.
 
 ### Security
 

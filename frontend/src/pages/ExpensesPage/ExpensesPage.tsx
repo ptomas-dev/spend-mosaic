@@ -51,6 +51,7 @@ const ExpensesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [listError, setListError] = useState("");
   const [deleteError, setDeleteError] = useState("");
@@ -96,31 +97,62 @@ const ExpensesPage = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/expenses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          amount: Number(form.amount),
-        }),
-      });
+      const isEditing = editingId !== null;
+      const response = await fetch(
+        isEditing ? `/expenses/${editingId}` : "/expenses",
+        {
+          method: isEditing ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...form,
+            amount: Number(form.amount),
+          }),
+        },
+      );
 
       if (!response.ok) {
         throw new Error(await getErrorMessage(response));
       }
 
-      const createdExpense = (await response.json()) as Expense;
-      setExpenses((currentExpenses) => [createdExpense, ...currentExpenses]);
+      const savedExpense = (await response.json()) as Expense;
+      setExpenses((currentExpenses) =>
+        isEditing
+          ? currentExpenses.map((expense) =>
+              expense.id === savedExpense.id ? savedExpense : expense,
+            )
+          : [savedExpense, ...currentExpenses],
+      );
+      setEditingId(null);
       setForm({ ...initialForm, date: getToday() });
     } catch (submitError) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Could not save the expense.",
+          : `Could not ${editingId === null ? "save" : "update"} the expense.`,
       );
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEdit = (expense: Expense) => {
+    setEditingId(expense.id);
+    setForm({
+      date: expense.date.slice(0, 10),
+      amount: String(expense.amount),
+      category: expense.category,
+      memo: expense.memo ?? "",
+    });
+    setError("");
+    document
+      .getElementById("expense-form-heading")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setForm({ ...initialForm, date: getToday() });
+    setError("");
   };
 
   const handleDelete = async (expense: Expense) => {
@@ -145,6 +177,9 @@ const ExpensesPage = () => {
           (currentExpense) => currentExpense.id !== expense.id,
         ),
       );
+      if (editingId === expense.id) {
+        handleCancelEdit();
+      }
     } catch (deleteError) {
       setDeleteError(
         deleteError instanceof Error
@@ -173,13 +208,13 @@ const ExpensesPage = () => {
         </p>
       </header>
 
-      <section aria-labelledby='new-expense-heading' className='space-y-5'>
+      <section aria-labelledby='expense-form-heading' className='space-y-5'>
         <div>
           <h2
-            id='new-expense-heading'
+            id='expense-form-heading'
             className='text-xl font-semibold text-white'
           >
-            New expense
+            {editingId === null ? "New expense" : "Edit expense"}
           </h2>
           <p className='mt-1 text-sm text-slate-300'>
             Fields marked as required must be completed.
@@ -200,7 +235,7 @@ const ExpensesPage = () => {
                     date: event.target.value,
                   }))
                 }
-                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
+                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400'
               />
             </label>
 
@@ -220,7 +255,7 @@ const ExpensesPage = () => {
                   }))
                 }
                 placeholder='0.00'
-                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
+                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400'
               />
             </label>
 
@@ -237,7 +272,7 @@ const ExpensesPage = () => {
                   }))
                 }
                 placeholder='e.g. Groceries'
-                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
+                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400'
               />
             </label>
 
@@ -255,7 +290,7 @@ const ExpensesPage = () => {
                   }))
                 }
                 placeholder='Additional details'
-                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400'
+                className='w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white placeholder:text-slate-500 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400'
               />
             </label>
           </div>
@@ -266,13 +301,31 @@ const ExpensesPage = () => {
             </p>
           )}
 
-          <button
-            type='submit'
-            disabled={isSubmitting}
-            className='rounded bg-rose-400 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-rose-300 disabled:cursor-wait disabled:opacity-60'
-          >
-            {isSubmitting ? "Saving..." : "Add expense"}
-          </button>
+          <div className='flex flex-wrap gap-3'>
+            <button
+              type='submit'
+              disabled={isSubmitting}
+              className='rounded bg-rose-400 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-rose-300 disabled:cursor-wait disabled:opacity-60'
+            >
+              {isSubmitting
+                ? editingId === null
+                  ? "Saving..."
+                  : "Saving changes..."
+                : editingId === null
+                  ? "Add expense"
+                  : "Save changes"}
+            </button>
+            {editingId !== null && (
+              <button
+                type='button'
+                onClick={handleCancelEdit}
+                disabled={isSubmitting}
+                className='rounded border border-slate-600 px-4 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-slate-800 disabled:opacity-60'
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
       </section>
 
@@ -333,35 +386,57 @@ const ExpensesPage = () => {
                 <p className='font-semibold text-white'>
                   {currencyFormatter.format(Number(expense.amount))}
                 </p>
-                <button
-                  type='button'
-                  disabled={deletingId === expense.id}
-                  onClick={() => void handleDelete(expense)}
-                  aria-label={
-                    deletingId === expense.id
-                      ? "Deleting expense"
-                      : `Delete ${expense.category}`
-                  }
-                  title={`Delete ${expense.category}`}
-                  aria-busy={deletingId === expense.id}
-                  className='inline-flex h-8 w-8 items-center justify-center justify-self-start rounded border border-rose-400/60 text-rose-200 transition-colors hover:bg-rose-400/10 focus:outline-none focus:ring-2 focus:ring-rose-300 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
-                >
-                  <svg
-                    aria-hidden='true'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    className='h-4 w-4'
+                <div className='flex items-center justify-self-start gap-2 sm:justify-self-end'>
+                  <button
+                    type='button'
+                    onClick={() => handleEdit(expense)}
+                    aria-label={`Edit ${expense.category}`}
+                    title={`Edit ${expense.category}`}
+                    className='inline-flex h-8 w-8 items-center justify-center rounded border border-slate-500 text-slate-200 transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-300'
                   >
-                    <path d='M3 6h18' />
-                    <path d='M8 6V4h8v2' />
-                    <path d='m19 6-1 14H6L5 6' />
-                    <path d='M10 11v5M14 11v5' />
-                  </svg>
-                </button>
+                    <svg
+                      aria-hidden='true'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='1.75'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      className='h-4 w-4'
+                    >
+                      <path d='m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z' />
+                    </svg>
+                  </button>
+                  <button
+                    type='button'
+                    disabled={deletingId === expense.id}
+                    onClick={() => void handleDelete(expense)}
+                    aria-label={
+                      deletingId === expense.id
+                        ? "Deleting expense"
+                        : `Delete ${expense.category}`
+                    }
+                    title={`Delete ${expense.category}`}
+                    aria-busy={deletingId === expense.id}
+                    className='inline-flex h-8 w-8 items-center justify-center rounded border border-rose-400/60 text-rose-200 transition-colors hover:bg-rose-400/10 focus:outline-none focus:ring-2 focus:ring-rose-300 disabled:cursor-wait disabled:opacity-60'
+                  >
+                    <svg
+                      aria-hidden='true'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='1.75'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      className='h-4 w-4'
+                    >
+                      <path d='M3 6h18' />
+                      <path d='M8 6V4h8v2' />
+                      <path d='m19 6-1 14H6L5 6' />
+                      <path d='M10 11v5M14 11v5' />
+                    </svg>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

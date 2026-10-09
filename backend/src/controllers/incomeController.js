@@ -44,6 +44,44 @@ exports.createIncome = async function (req, res) {
   }
 };
 
+exports.updateIncome = async function (req, res) {
+  const { date, amount, category, memo } = req.body;
+  const numericAmount = Number(amount);
+
+  if (
+    !date ||
+    !Number.isFinite(numericAmount) ||
+    numericAmount <= 0 ||
+    !category?.trim()
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Date, positive amount, and category are required" });
+  }
+
+  try {
+    const income = await Income.findByPk(req.params.id);
+
+    if (!income) {
+      return res.status(404).json({ error: "Income not found" });
+    }
+
+    await income.update({
+      date,
+      amount: numericAmount,
+      category: category.trim(),
+      memo: memo ?? "",
+    });
+
+    return res.status(200).json(income);
+  } catch (error) {
+    console.error("Error updating income:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating the income" });
+  }
+};
+
 exports.deleteIncome = async function (req, res) {
   const incomeId = req.params.id;
 

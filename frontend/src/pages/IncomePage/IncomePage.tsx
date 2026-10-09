@@ -53,6 +53,7 @@ const IncomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [listError, setListError] = useState("");
   const [deleteError, setDeleteError] = useState("");
@@ -96,31 +97,62 @@ const IncomePage = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          amount: Number(form.amount),
-        }),
-      });
+      const isEditing = editingId !== null;
+      const response = await fetch(
+        isEditing ? `${endpoint}/${editingId}` : endpoint,
+        {
+          method: isEditing ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...form,
+            amount: Number(form.amount),
+          }),
+        },
+      );
 
       if (!response.ok) {
         throw new Error(await getErrorMessage(response));
       }
 
-      const createdIncome = (await response.json()) as Income;
-      setIncomes((currentIncomes) => [createdIncome, ...currentIncomes]);
+      const savedIncome = (await response.json()) as Income;
+      setIncomes((currentIncomes) =>
+        isEditing
+          ? currentIncomes.map((income) =>
+              income.id === savedIncome.id ? savedIncome : income,
+            )
+          : [savedIncome, ...currentIncomes],
+      );
+      setEditingId(null);
       setForm(createInitialForm());
     } catch (submitError) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Could not save the income.",
+          : `Could not ${editingId === null ? "save" : "update"} the income.`,
       );
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEdit = (income: Income) => {
+    setEditingId(income.id);
+    setForm({
+      date: income.date.slice(0, 10),
+      amount: String(income.amount),
+      category: income.category,
+      memo: income.memo ?? "",
+    });
+    setError("");
+    document
+      .getElementById("income-form-heading")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setForm(createInitialForm());
+    setError("");
   };
 
   const handleDelete = async (income: Income) => {
@@ -145,6 +177,9 @@ const IncomePage = () => {
           (currentIncome) => currentIncome.id !== income.id,
         ),
       );
+      if (editingId === income.id) {
+        handleCancelEdit();
+      }
     } catch (deleteError) {
       setDeleteError(
         deleteError instanceof Error
@@ -170,13 +205,13 @@ const IncomePage = () => {
         </p>
       </header>
 
-      <section aria-labelledby='new-income-heading' className='space-y-5'>
+      <section aria-labelledby='income-form-heading' className='space-y-5'>
         <div>
           <h2
-            id='new-income-heading'
+            id='income-form-heading'
             className='text-xl font-semibold text-white'
           >
-            New income
+            {editingId === null ? "New income" : "Edit income"}
           </h2>
           <p className='mt-1 text-sm text-slate-300'>
             Fields marked as required must be completed.
@@ -263,13 +298,31 @@ const IncomePage = () => {
             </p>
           )}
 
-          <button
-            type='submit'
-            disabled={isSubmitting}
-            className='rounded bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-60'
-          >
-            {isSubmitting ? "Saving..." : "Add income"}
-          </button>
+          <div className='flex flex-wrap gap-3'>
+            <button
+              type='submit'
+              disabled={isSubmitting}
+              className='rounded bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-60'
+            >
+              {isSubmitting
+                ? editingId === null
+                  ? "Saving..."
+                  : "Saving changes..."
+                : editingId === null
+                  ? "Add income"
+                  : "Save changes"}
+            </button>
+            {editingId !== null && (
+              <button
+                type='button'
+                onClick={handleCancelEdit}
+                disabled={isSubmitting}
+                className='rounded border border-slate-600 px-4 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-slate-800 disabled:opacity-60'
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
       </section>
 
@@ -328,35 +381,57 @@ const IncomePage = () => {
                 <p className='font-semibold text-white'>
                   {currencyFormatter.format(Number(income.amount))}
                 </p>
-                <button
-                  type='button'
-                  disabled={deletingId === income.id}
-                  onClick={() => void handleDelete(income)}
-                  aria-label={
-                    deletingId === income.id
-                      ? "Deleting income"
-                      : `Delete ${income.category}`
-                  }
-                  title={`Delete ${income.category}`}
-                  aria-busy={deletingId === income.id}
-                  className='inline-flex h-8 w-8 items-center justify-center justify-self-start rounded border border-rose-400/60 text-rose-200 transition-colors hover:bg-rose-400/10 focus:outline-none focus:ring-2 focus:ring-rose-300 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
-                >
-                  <svg
-                    aria-hidden='true'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='1.75'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    className='h-4 w-4'
+                <div className='flex items-center justify-self-start gap-2 sm:justify-self-end'>
+                  <button
+                    type='button'
+                    onClick={() => handleEdit(income)}
+                    aria-label={`Edit ${income.category}`}
+                    title={`Edit ${income.category}`}
+                    className='inline-flex h-8 w-8 items-center justify-center rounded border border-slate-500 text-slate-200 transition-colors hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-300'
                   >
-                    <path d='M3 6h18' />
-                    <path d='M8 6V4h8v2' />
-                    <path d='m19 6-1 14H6L5 6' />
-                    <path d='M10 11v5M14 11v5' />
-                  </svg>
-                </button>
+                    <svg
+                      aria-hidden='true'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='1.75'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      className='h-4 w-4'
+                    >
+                      <path d='m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z' />
+                    </svg>
+                  </button>
+                  <button
+                    type='button'
+                    disabled={deletingId === income.id}
+                    onClick={() => void handleDelete(income)}
+                    aria-label={
+                      deletingId === income.id
+                        ? "Deleting income"
+                        : `Delete ${income.category}`
+                    }
+                    title={`Delete ${income.category}`}
+                    aria-busy={deletingId === income.id}
+                    className='inline-flex h-8 w-8 items-center justify-center rounded border border-rose-400/60 text-rose-200 transition-colors hover:bg-rose-400/10 focus:outline-none focus:ring-2 focus:ring-rose-300 disabled:cursor-wait disabled:opacity-60'
+                  >
+                    <svg
+                      aria-hidden='true'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='1.75'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      className='h-4 w-4'
+                    >
+                      <path d='M3 6h18' />
+                      <path d='M8 6V4h8v2' />
+                      <path d='m19 6-1 14H6L5 6' />
+                      <path d='M10 11v5M14 11v5' />
+                    </svg>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

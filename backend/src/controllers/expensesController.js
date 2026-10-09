@@ -49,32 +49,40 @@ exports.createExpense = function (req, res) {
 
 exports.updateExpense = async function (req, res) {
   const { date, amount, category, memo } = req.body;
-  const id = req.params.id;
+  const numericAmount = Number(amount);
 
-  const expense = await Expense.findByPk(id);
-
-  if (!expense) {
-    return res.status(404).json({ error: "Expense not found" });
+  if (
+    !date ||
+    !Number.isFinite(numericAmount) ||
+    numericAmount <= 0 ||
+    !category?.trim()
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Date, positive amount, and category are required" });
   }
 
-  await expense
-    .update({
-      date: date || expense.date,
-      amount: amount || expense.amount,
-      category: category || expense.category,
-      memo: memo || expense.memo,
-    })
-    .then((expense) => {
-      res
-        .status(200)
-        .json({ message: "Expense updated successfully", expense });
-    })
-    .catch((error) => {
-      console.error("Error updating expense:", error);
-      res
-        .status(500)
-        .json({ error: "An error occurred while retrieving expenses" });
+  try {
+    const expense = await Expense.findByPk(req.params.id);
+
+    if (!expense) {
+      return res.status(404).json({ error: "Expense not found" });
+    }
+
+    await expense.update({
+      date,
+      amount: numericAmount,
+      category: category.trim(),
+      memo: memo ?? "",
     });
+
+    return res.status(200).json(expense);
+  } catch (error) {
+    console.error("Error updating expense:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while updating the expense" });
+  }
 };
 
 exports.deleteExpense = async function (req, res) {
