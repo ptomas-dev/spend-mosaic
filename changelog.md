@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file. The format 
 ### Added
 
 - Added repository instructions for GitHub Copilot.
+- Connected the expenses page to the backend for listing and creating expenses.
+- Added a Vite development proxy for the expenses API.
 
 ### Security
 
