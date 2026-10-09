@@ -7,7 +7,6 @@ The Personal Finance App is a web application designed to help you manage and tr
 ## Technologies Used
 
 - **Frontend**:
-
   - [React](https://reactjs.org/): A JavaScript library for building user interfaces.
   - [TypeScript](https://www.typescriptlang.org/): A typed superset of JavaScript.
   - [Redux Toolkit](https://redux-toolkit.js.org/): A library for managing global state.
@@ -15,7 +14,6 @@ The Personal Finance App is a web application designed to help you manage and tr
   - [Vercel](https://vercel.com/): For deploying the frontend.
 
 - **Backend**:
-
   - [Node.js](https://nodejs.org/): JavaScript runtime for building the server.
   - [Express](https://expressjs.com/): Web application framework for Node.js.
   - [TypeScript](https://www.typescriptlang.org/): For type safety in the backend.
@@ -50,19 +48,14 @@ The Personal Finance App is a web application designed to help you manage and tr
 ## Features
 
 - **Dashboard**:
-
   - Overview of total income, total expenses, and current balance.
   - Basic breakdown of financial data.
 
 - **Expenses Management**:
-
-  - Add, view, and categorize expenses.
-  - List of past expenses with sorting and filtering options.
+  - Add, view, edit, and delete expenses with a date, amount, category, and optional note.
 
 - **Income Management**:
-
-  - Add, view, and categorize income.
-  - List of past income transactions.
+  - Add, view, edit, and delete income with a date, amount, category, and optional note.
 
 - **Reports** (Upcoming):
   - Generate simple reports showing income vs. expenses.
@@ -76,13 +69,13 @@ The Personal Finance App is a web application designed to help you manage and tr
 - [x] Develop frontend layout with static header, footer, and sidebar.
 - [x] Implement basic pages with React router: Dashboard, Expenses, Income.
 - [ ] Set up Redux for state management.
-- [x] Create API endpoints for adding and retrieving expenses and income.
-- [ ] Connect frontend to backend API.
+- [x] Create API endpoints for listing, creating, updating, and deleting expenses and income.
+- [x] Connect the expenses and income pages to the backend API.
 - [ ] Deploy frontend and backend.
 
 ### Phase 2: Enhancements
 
-- [ ] Implement form validation and error handling.
+- [x] Add basic form validation and error handling to expense and income creation.
 - [ ] Add advanced filtering and sorting options.
 - [ ] Develop dynamic reports and integrate charts.
 - [ ] Add user authentication (JWT-based).
@@ -97,12 +90,14 @@ The Personal Finance App is a web application designed to help you manage and tr
 ## Project Structure
 
 This project uses **npm workspaces** to manage a monorepo with two independent applications:
+
 - `backend/`: Express.js server with Node.js
 - `frontend/`: React + TypeScript web application
 
 ### Why Workspaces?
 
 Workspaces simplify dependency management by:
+
 - Installing all dependencies from the repository root with a single `npm install`
 - Running scripts for individual apps without navigating between directories
 - Keeping a single, centralized `package-lock.json` for consistency
@@ -132,7 +127,6 @@ Workspaces simplify dependency management by:
    This command automatically installs dependencies for both `backend/` and `frontend/` workspaces.
 
 3. **Set up environment variables**:
-
    - Create a `.env` file in the `/backend` directory with database credentials:
      ```
      DB_HOST=your_database_host
@@ -144,7 +138,6 @@ Workspaces simplify dependency management by:
    - Create a `.env` file in the `/frontend` directory with any API configuration if needed.
 
 4. **Run the development server**:
-
    - For frontend only:
      ```bash
      npm run dev:frontend
@@ -154,10 +147,11 @@ Workspaces simplify dependency management by:
      npm run dev:backend
      ```
    - For both (in separate terminals):
+
      ```bash
      # Terminal 1
      npm run dev:backend
-     
+
      # Terminal 2
      npm run dev:frontend
      ```
@@ -171,9 +165,9 @@ Workspaces simplify dependency management by:
 - **Frontend**: Deployed on [Vercel](https://vercel.com/).
 - **Backend**: Deployed on [Heroku](https://www.heroku.com/).
 
-## Contributing
+## Development Workflow
 
-As this is a personal project, contributions are not currently accepted. However, feedback and suggestions are welcome.
+See [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) for the Git workflow used to maintain this project.
 
 ## License
 

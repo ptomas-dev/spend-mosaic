@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pages } from "../../pages/Root";
 
@@ -12,17 +12,15 @@ const Sidebar = () => {
       "w-auto text-center text-white p-4 border-b border-secondary text-xl cursor-pointer bg-secondary uppercase",
   };
 
-  ("w-auto text-center text-white p-4 border-b border-secondary text-xl cursor-pointer bg-secondary uppercase");
-
   const handleClick = (path: string) => {
     setSelected(path);
     navigate(path);
   };
 
   return (
-    <aside className="border-r border-secondary w-64 ">
+    <aside className='border-r border-secondary w-64 '>
       <nav>
-        <ul className="">
+        <ul className=''>
           <li
             className={selected === "/" ? styles.selected : styles.base}
             onClick={() => handleClick(Pages.DASHBOARD)}

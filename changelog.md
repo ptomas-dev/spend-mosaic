@@ -6,11 +6,22 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Added an expenses-by-category bar chart to the dashboard, with descending totals, percentage shares, and an empty state.
+- Added an income-by-category bar chart with the same totals, percentage shares, and empty state as expenses.
 - Added repository instructions for GitHub Copilot.
+- Connected the expenses page to the backend for listing and creating expenses.
+- Added a Vite development proxy for the expenses API.
+- Added income model and API endpoints for listing and creating income.
+- Connected the income page to the backend and added its Vite development proxy.
+- Added confirmed deletion of expenses and income from their lists.
+- Added income editing through the update API and page form.
+- Added expense editing through the update API and page form.
+- Added an all-time dashboard summary of income, expenses, and balance using the existing APIs, with loading, error, and retry states.
 
 ### Security
 
 - Updated locked versions of React Router to 6.30.6 and nanoid to 3.3.18 to address npm audit vulnerabilities.
+- Updated `react-router-dom` to `^7.18.4` to address GHSA-wrjc-x8rr-h8h6 and GHSA-337j-9hxr-rhxg.
 
 ## [0.1.4] - 2026-08-03
 

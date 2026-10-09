@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const sequelize = require("./config/database");
 const expensesRouter = require("./routes/expenses");
+const incomeRouter = require("./routes/income");
 
 const app = express();
 const port = 5000;
@@ -20,6 +21,7 @@ sequelize
 
 app.use(express.json());
 app.use("/expenses", expensesRouter);
+app.use("/income", incomeRouter);
 
 app.get("/", function (req, res) {
   res.send("Hello World!");

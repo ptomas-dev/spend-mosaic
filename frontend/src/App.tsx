@@ -1,13 +1,11 @@
-import React from "react";
-import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Root } from "./pages/Root";
+import "./App.css";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExpensesPage } from "./pages/ExpensesPage";
 import { IncomePage } from "./pages/IncomePage";
 import { ReportsPage } from "./pages/ReportsPage";
+import { Pages, Root } from "./pages/Root";
 import { SettingsPage } from "./pages/SettingsPage";
-import { Pages } from "./pages/Root";
 
 const router = createBrowserRouter([
   {
