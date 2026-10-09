@@ -50,8 +50,10 @@ const ExpensesPage = () => {
   const [form, setForm] = useState<ExpenseForm>(initialForm);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [listError, setListError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -118,6 +120,39 @@ const ExpensesPage = () => {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (expense: Expense) => {
+    if (!window.confirm(`Apagar a despesa "${expense.category}"?`)) {
+      return;
+    }
+
+    setDeleteError("");
+    setDeletingId(expense.id);
+
+    try {
+      const response = await fetch(`/expenses/${expense.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(await getErrorMessage(response));
+      }
+
+      setExpenses((currentExpenses) =>
+        currentExpenses.filter(
+          (currentExpense) => currentExpense.id !== expense.id,
+        ),
+      );
+    } catch (deleteError) {
+      setDeleteError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Não foi possível apagar a despesa.",
+      );
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -263,6 +298,12 @@ const ExpensesPage = () => {
           </p>
         </div>
 
+        {deleteError && (
+          <p role='alert' className='text-sm text-rose-300'>
+            {deleteError}
+          </p>
+        )}
+
         {isLoading ? (
           <p role='status' className='py-6 text-sm text-slate-300'>
             A carregar despesas...
@@ -280,7 +321,7 @@ const ExpensesPage = () => {
             {expenses.map((expense) => (
               <li
                 key={expense.id}
-                className='grid gap-2 py-4 sm:grid-cols-[1fr_auto] sm:items-center'
+                className='grid gap-2 py-4 sm:grid-cols-[1fr_auto_auto] sm:items-center'
               >
                 <div>
                   <p className='font-medium text-white'>{expense.category}</p>
@@ -292,6 +333,14 @@ const ExpensesPage = () => {
                 <p className='font-semibold text-white'>
                   {currencyFormatter.format(Number(expense.amount))}
                 </p>
+                <button
+                  type='button'
+                  disabled={deletingId === expense.id}
+                  onClick={() => void handleDelete(expense)}
+                  className='justify-self-start rounded border border-rose-400/60 px-3 py-1.5 text-sm text-rose-200 transition-colors hover:bg-rose-400/10 disabled:cursor-wait disabled:opacity-60 sm:justify-self-end'
+                >
+                  {deletingId === expense.id ? "A apagar..." : "Apagar"}
+                </button>
               </li>
             ))}
           </ul>

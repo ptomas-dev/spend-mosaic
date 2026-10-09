@@ -43,3 +43,28 @@ exports.createIncome = async function (req, res) {
       .json({ error: "An error occurred while creating the income" });
   }
 };
+
+exports.deleteIncome = async function (req, res) {
+  const incomeId = req.params.id;
+
+  if (!incomeId) {
+    return res.status(400).json({ error: "Income id is mandatory" });
+  }
+
+  try {
+    const deleteCount = await Income.destroy({
+      where: { id: incomeId },
+    });
+
+    if (deleteCount === 0) {
+      return res.status(404).json({ error: "Income not found" });
+    }
+
+    return res.status(200).json({ message: "Income deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting income:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while deleting the income" });
+  }
+};

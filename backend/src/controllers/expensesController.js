@@ -90,10 +90,10 @@ exports.deleteExpense = async function (req, res) {
     });
 
     if (deleteCount === 0) {
-      res.status(404).json({ error: "Expense not found" });
+      return res.status(404).json({ error: "Expense not found" });
     }
 
-    res.status(200).json({ message: "Expense deleted successfully" });
+    return res.status(200).json({ message: "Expense deleted successfully" });
   } catch (error) {
     console.error("Error deleting expense:", error);
     res
