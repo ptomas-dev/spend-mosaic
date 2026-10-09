@@ -55,7 +55,7 @@ The Personal Finance App is a web application designed to help you manage and tr
   - Add and view expenses with a date, amount, category, and optional note.
 
 - **Income Management**:
-  - Income tracking is not connected to a backend yet.
+  - Add and view income with a date, amount, category, and optional note.
 
 - **Reports** (Upcoming):
   - Generate simple reports showing income vs. expenses.
@@ -69,14 +69,13 @@ The Personal Finance App is a web application designed to help you manage and tr
 - [x] Develop frontend layout with static header, footer, and sidebar.
 - [x] Implement basic pages with React router: Dashboard, Expenses, Income.
 - [ ] Set up Redux for state management.
-- [x] Create API endpoints for managing expenses.
-- [x] Connect the expenses page to the backend API.
-- [ ] Create API endpoints and connect the frontend for income.
+- [x] Create API endpoints for listing and creating expenses and income.
+- [x] Connect the expenses and income pages to the backend API.
 - [ ] Deploy frontend and backend.
 
 ### Phase 2: Enhancements
 
-- [x] Add basic form validation and error handling to expense creation.
+- [x] Add basic form validation and error handling to expense and income creation.
 - [ ] Add advanced filtering and sorting options.
 - [ ] Develop dynamic reports and integrate charts.
 - [ ] Add user authentication (JWT-based).
