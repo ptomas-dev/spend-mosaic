@@ -1,8 +1,8 @@
-const express = require("express");
-require("dotenv").config();
-const sequelize = require("./config/database");
-const expensesRouter = require("./routes/expenses");
-const incomeRouter = require("./routes/income");
+import "dotenv/config";
+import express from "express";
+import sequelize from "./config/database";
+import expensesRouter from "./routes/expenses";
+import incomeRouter from "./routes/income";
 
 const app = express();
 const port = 5000;

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Added backend TypeScript build and type-check commands, typed Sequelize models and Express controllers, and database-free API regression tests.
 - Added repository instructions for GitHub Copilot.
 - Connected the expenses page to the backend for listing and creating expenses.
 - Added a Vite development proxy for the expenses API.
@@ -18,6 +19,9 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Changed
 
+- Migrated backend source from JavaScript to strict TypeScript while retaining CommonJS runtime output and existing API behavior.
+- Updated backend development to use nodemon with ts-node and production startup to run compiled JavaScript.
+- Documented backend architecture, migration and deployment instructions, and backend validation commands in the development workflow.
 - Made sidebar selection follow the router with keyboard-accessible NavLink navigation.
 - Consolidated transaction forms, lists, rows, types, validation, and formatting while preserving expense and income variants.
 - Migrated expense and income CRUD to Redux Toolkit and RTK Query with separate resource invalidation and a configurable public API base URL.

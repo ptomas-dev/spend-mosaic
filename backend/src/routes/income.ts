@@ -1,10 +1,11 @@
-const express = require("express");
-const router = express.Router();
-const incomeController = require("../controllers/incomeController");
+import { Router } from "express";
+import * as incomeController from "../controllers/incomeController";
+
+const router = Router();
 
 router.get("/", incomeController.getAllIncomes);
 router.post("/", incomeController.createIncome);
 router.put("/:id", incomeController.updateIncome);
 router.delete("/:id", incomeController.deleteIncome);
 
-module.exports = router;
+export default router;

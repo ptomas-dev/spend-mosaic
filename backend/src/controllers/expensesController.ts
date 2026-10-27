@@ -1,6 +1,10 @@
-const Expense = require("../models/Expense");
+import Expense from "../models/Expense";
+import type { TransactionRequest, TransactionResponse } from "./transactionRequest";
 
-exports.getAllExpenses = async function (req, res) {
+export async function getAllExpenses(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   try {
     const expenses = await Expense.findAll();
     res.status(200).json(expenses);
@@ -10,9 +14,12 @@ exports.getAllExpenses = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while retrieving expenses" });
   }
-};
+}
 
-exports.getExpenseById = async function (req, res) {
+export async function getExpenseById(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   const id = req.params.id;
 
   if (!id) {
@@ -28,9 +35,9 @@ exports.getExpenseById = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while retrieving expenses" });
   }
-};
+}
 
-exports.createExpense = function (req, res) {
+export function createExpense(req: TransactionRequest, res: TransactionResponse) {
   const { date, amount, category, memo } = req.body;
 
   if (!date || !amount || !category) {
@@ -45,9 +52,12 @@ exports.createExpense = function (req, res) {
   })
     .then((expense) => res.status(201).json(expense))
     .catch((err) => res.status(500).json({ err }));
-};
+}
 
-exports.updateExpense = async function (req, res) {
+export async function updateExpense(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   const { date, amount, category, memo } = req.body;
   const numericAmount = Number(amount);
 
@@ -83,9 +93,12 @@ exports.updateExpense = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while updating the expense" });
   }
-};
+}
 
-exports.deleteExpense = async function (req, res) {
+export async function deleteExpense(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   const expenseId = req.params.id;
 
   if (!expenseId) {
@@ -108,4 +121,4 @@ exports.deleteExpense = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while deleting the expense" });
   }
-};
+}

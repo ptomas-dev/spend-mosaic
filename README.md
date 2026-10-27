@@ -17,7 +17,7 @@ The Personal Finance App is a web application designed to help you manage and tr
   - [Node.js](https://nodejs.org/): JavaScript runtime for building the server.
   - [Express](https://expressjs.com/): Web application framework for Node.js.
   - [TypeScript](https://www.typescriptlang.org/): For type safety in the backend.
-  - [Prisma](https://www.prisma.io/): ORM for interacting with the database.
+  - [Sequelize](https://sequelize.org/): ORM for interacting with the database.
   - [PostgreSQL](https://www.postgresql.org/): Relational database for storing financial data.
   - [Heroku](https://www.heroku.com/): For deploying the backend.
 
@@ -31,17 +31,17 @@ The Personal Finance App is a web application designed to help you manage and tr
 
   Install PostgreSQL and create a new database (you can name it according to your preference, e.g., finmosaic_dev).
 
-  Ensure that you have set up environment variables in a .env file at the project’s root to manage database credentials and connection settings:
+  Set up environment variables in a `.env` file in the `backend` directory to manage database credentials and connection settings:
 
   ```
   DB_HOST=your_database_host
   DB_USER=your_database_user
   DB_PASSWORD=your_database_password
   DB_NAME=your_database_name
-  DB_PORT=your_database_port
+  DB_DIALECT=postgres
   ```
 
-  Run the app with npm start (or node server.js). The server will attempt to connect to the PostgreSQL database when it starts.
+  From the repository root, run `npm run dev:backend` for development. For production, run `npm run build:backend`, then `npm run start:backend`. The server waits for successful database synchronization before listening on port 5000.
 
   If you’re using pgAdmin4 or any other database client, you can inspect the tables and records created by Sequelize under the specified database.
 
@@ -91,7 +91,7 @@ The Personal Finance App is a web application designed to help you manage and tr
 
 This project uses **npm workspaces** to manage a monorepo with two independent applications:
 
-- `backend/`: Express.js server with Node.js
+- `backend/`: TypeScript Express.js server with Node.js and Sequelize
 - `frontend/`: React + TypeScript web application
 
 ### Why Workspaces?
@@ -133,7 +133,7 @@ Workspaces simplify dependency management by:
      DB_USER=your_database_user
      DB_PASSWORD=your_database_password
      DB_NAME=your_database_name
-     DB_PORT=your_database_port
+     DB_DIALECT=postgres
      ```
    - Create a `.env` file in the `/frontend` directory with any API configuration if needed.
 
@@ -158,7 +158,7 @@ Workspaces simplify dependency management by:
 
 5. **Access the app**:
    - Open your browser and navigate to `http://localhost:5173` for the frontend.
-   - Ensure the backend is running at `http://localhost:5000` or your configured port.
+   - Ensure the backend is running at `http://localhost:5000`.
 
 ## Deployment
 
@@ -168,6 +168,46 @@ Workspaces simplify dependency management by:
 ## Development Workflow
 
 See [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) for the Git workflow used to maintain this project.
+
+### Backend
+
+The backend uses strict TypeScript and compiles to CommonJS JavaScript in
+`backend/dist`. Development uses nodemon and ts-node to restart on TypeScript
+changes. Run these commands from the repository root:
+
+```bash
+npm run dev:backend
+npm run typecheck -w backend
+npm run build:backend
+npm run start:backend
+npm run test -w backend
+```
+
+The existing separation under `backend/src` is preserved: `config` initializes
+Sequelize, `models` defines the unchanged database schema, `controllers` handles
+requests, and `routes` maps endpoints to controllers. Shared transaction types
+describe model attributes, creation inputs, and request bodies. These compile-time
+types do not replace runtime request validation.
+
+Build before starting the production server; the start command runs only compiled
+JavaScript and does not require ts-node. Supply `DB_NAME`, `DB_USER`, `DB_PASSWORD`,
+`DB_HOST`, and `DB_DIALECT=postgres` through `backend/.env` or the environment.
+Missing required credentials or an unsupported/missing dialect produce an explicit
+configuration error. The backend retains Sequelize's default PostgreSQL port (5432).
+
+For existing setups, replace direct execution of `src/server.js` with the commands
+above. No database migration or frontend API changes are required: endpoint paths,
+response formats, validation behavior, and Sequelize table definitions are retained.
+Generated files in `backend/dist` are ignored by Git and must be built during
+deployment before starting the server.
+
+Backend tests build the application and exercise the real Express routes with
+stubbed Sequelize methods. They check CRUD responses, existing validation,
+normalization, model definitions, error handling, configuration, and startup through
+both ts-node and compiled JavaScript. No running PostgreSQL instance is required;
+these are not database integration tests.
+
+### Frontend
 
 Frontend architecture, API URL configuration, cache policy, and test commands are
 documented in [frontend/README.md](frontend/README.md). Run the frontend suite

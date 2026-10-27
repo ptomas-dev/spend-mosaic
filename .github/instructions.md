@@ -4,7 +4,7 @@
 
 - This is an npm workspaces monorepo. Keep frontend work in `frontend/` and API/database work in `backend/`.
 - The frontend is React 18, TypeScript, Vite, React Router, and Tailwind CSS.
-- The backend is JavaScript, Express 5, Sequelize, and PostgreSQL. Preserve the controller, route, model, and config separation under `backend/src/`.
+- The backend is strict TypeScript, Express 5, Sequelize, and PostgreSQL. Preserve the controller, route, model, and config separation under `backend/src/`.
 - Use the root `package-lock.json`; do not add workspace-local lockfiles.
 
 ## Commands
@@ -13,7 +13,8 @@
 - Run the frontend: `npm run dev:frontend`.
 - Run the backend: `npm run dev:backend`.
 - Validate frontend changes with `npm run build:frontend` and `npm run lint -w frontend`.
-- The backend test script is currently a placeholder. Do not claim it passes or use it as validation.
+- Validate backend changes with `npm run typecheck -w backend` and `npm run test -w backend` (builds and runs database-free API regression tests).
+- Build the backend with `npm run build:backend` before production startup with `npm run start:backend`.
 
 ## Conventions
 
