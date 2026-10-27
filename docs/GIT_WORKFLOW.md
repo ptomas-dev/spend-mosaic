@@ -32,7 +32,18 @@ npm run build:frontend
 npm run lint -w frontend
 ```
 
-Run all applicable tests when they exist, including backend tests once they are available. A PR may only be merged after every required validation succeeds, unless a pre-existing failure is clearly documented and approved in the PR.
+For backend changes, also run:
+
+```bash
+npm run typecheck -w backend
+npm run test -w backend
+```
+
+The backend test command builds the TypeScript source and runs database-free API
+regression tests; it does not verify a live PostgreSQL connection. Run other
+applicable tests, including `npm run test -w frontend` for frontend behavior changes.
+A PR may only be merged after every required validation succeeds, unless a
+pre-existing failure is clearly documented and approved in the PR.
 
 ## Commit convention
 

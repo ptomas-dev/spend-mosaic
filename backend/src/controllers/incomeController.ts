@@ -1,6 +1,10 @@
-const Income = require("../models/Income");
+import Income from "../models/Income";
+import type { TransactionRequest, TransactionResponse } from "./transactionRequest";
 
-exports.getAllIncomes = async function (req, res) {
+export async function getAllIncomes(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   try {
     const incomes = await Income.findAll();
     res.status(200).json(incomes);
@@ -10,9 +14,12 @@ exports.getAllIncomes = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while retrieving incomes" });
   }
-};
+}
 
-exports.createIncome = async function (req, res) {
+export async function createIncome(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   const { date, amount, category, memo } = req.body;
   const numericAmount = Number(amount);
 
@@ -42,9 +49,12 @@ exports.createIncome = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while creating the income" });
   }
-};
+}
 
-exports.updateIncome = async function (req, res) {
+export async function updateIncome(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   const { date, amount, category, memo } = req.body;
   const numericAmount = Number(amount);
 
@@ -80,9 +90,12 @@ exports.updateIncome = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while updating the income" });
   }
-};
+}
 
-exports.deleteIncome = async function (req, res) {
+export async function deleteIncome(
+  req: TransactionRequest,
+  res: TransactionResponse,
+) {
   const incomeId = req.params.id;
 
   if (!incomeId) {
@@ -105,4 +118,4 @@ exports.deleteIncome = async function (req, res) {
       .status(500)
       .json({ error: "An error occurred while deleting the income" });
   }
-};
+}

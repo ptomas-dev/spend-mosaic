@@ -1,7 +1,8 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database";
+import type { TransactionModel } from "./transaction";
 
-const Expense = sequelize.define("Expense", {
+const Expense = sequelize.define<TransactionModel>("Expense", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -25,4 +26,4 @@ const Expense = sequelize.define("Expense", {
   },
 });
 
-module.exports = Expense;
+export default Expense;
