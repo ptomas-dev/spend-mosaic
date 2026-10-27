@@ -68,7 +68,7 @@ The Personal Finance App is a web application designed to help you manage and tr
 - [x] Setup project repository and initial configuration.
 - [x] Develop frontend layout with static header, footer, and sidebar.
 - [x] Implement basic pages with React router: Dashboard, Expenses, Income.
-- [ ] Set up Redux for state management.
+- [x] Set up Redux Toolkit and RTK Query for remote transaction state.
 - [x] Create API endpoints for listing, creating, updating, and deleting expenses and income.
 - [x] Connect the expenses and income pages to the backend API.
 - [ ] Deploy frontend and backend.
@@ -168,6 +168,11 @@ Workspaces simplify dependency management by:
 ## Development Workflow
 
 See [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) for the Git workflow used to maintain this project.
+
+Frontend architecture, API URL configuration, cache policy, and test commands are
+documented in [frontend/README.md](frontend/README.md). Run the frontend suite
+without a backend using `npm run test -w frontend`; required checks remain
+`npm run build:frontend` and `npm run lint -w frontend` from the repository root.
 
 ## License
 

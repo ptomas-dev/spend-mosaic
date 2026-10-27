@@ -22,6 +22,11 @@
 - Keep changes focused; update `README.md` or `changelog.md` when a user-facing workflow or release-relevant behavior changes.
 - Before changing dependencies, inspect the root workspace manifest and preserve the single-lockfile workspace setup.
 
+## Language
+
+- Write all project documentation, application text (including labels, messages, and errors), code comments, commit messages, PR descriptions, and other project content in English, even when the user communicates in Portuguese or another language.
+- Conversational replies may follow the user's language; this does not change the English requirement for project content.
+
 ## Git Flow
 
 - Use Git Flow: branch feature work from `develop` as `feature/<description>` and merge it back into `develop` when complete.
