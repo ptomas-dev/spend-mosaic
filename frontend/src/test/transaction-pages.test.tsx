@@ -3,6 +3,7 @@ import { http, HttpResponse } from "msw";
 import { describe, expect, it, vi } from "vitest";
 import { ExpensesPage } from "../pages/ExpensesPage";
 import { IncomePage } from "../pages/IncomePage";
+import { displayCalendarDate } from "../domain/transactions/dates";
 import { createResponseGate, createTransactionRecords, server } from "./server";
 import {
   fillTransactionForm,
@@ -28,7 +29,7 @@ const draft: TransactionDraft = {
 
 function expectDraft(expected: TransactionDraft) {
   const fields = getTransactionFields();
-  expect(fields.date).toHaveValue(expected.date);
+  expect(fields.date).toHaveValue(displayCalendarDate(expected.date));
   expect(fields.amount).toHaveValue(Number(expected.amount));
   expect(fields.category).toHaveValue(expected.category);
   expect(fields.memo).toHaveValue(expected.memo);
@@ -38,7 +39,7 @@ function expectResetForm() {
   const fields = getTransactionFields();
   const today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  expect(fields.date).toHaveValue(today.toISOString().slice(0, 10));
+  expect(fields.date).toHaveValue(displayCalendarDate(today.toISOString()));
   expect(fields.amount).toHaveValue(null);
   expect(fields.category).toHaveValue("");
   expect(fields.memo).toHaveValue("");

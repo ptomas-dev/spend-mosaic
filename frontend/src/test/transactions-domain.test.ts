@@ -160,7 +160,7 @@ describe("draftToPayload", () => {
     );
   });
 
-  it("rejects missing date without adding date parsing or timezone conversion", () => {
+  it("rejects missing dates and preserves valid timestamp prefixes", () => {
     expect(() => draftToPayload({ ...draft, date: "" })).toThrow(
       "Date, positive amount, and category are required",
     );
@@ -168,6 +168,14 @@ describe("draftToPayload", () => {
       response.date,
     );
   });
+
+  it.each(["31/02/2026", "2026-02-30", "invalid"])(
+    "rejects invalid date drafts before sending to the API: %s", (date) => {
+      expect(() => draftToPayload({ ...draft, date })).toThrow(
+        "Date, positive amount, and category are required",
+      );
+    },
+  );
 
   it("preserves empty and whitespace-only memo", () => {
     expect(draftToPayload({ ...draft, memo: "" }).memo).toBe("");
@@ -197,18 +205,16 @@ describe("formatting", () => {
     "2025-12-31T23:30:00-12:00",
     "2026-03-29T01:30:00.000Z",
   ])(
-    "preserves the pages' local medium date formatting at boundary %s",
+    "formats the stored calendar date as dd/mm/yyyy at boundary %s",
     (date) => {
-      const existingFormatter = new Intl.DateTimeFormat("en-GB", {
-        dateStyle: "medium",
-      });
-      expect(formatDate(date)).toBe(existingFormatter.format(new Date(date)));
+      const [year, month, day] = date.slice(0, 10).split("-");
+      expect(formatDate(date)).toBe(`${day}/${month}/${year}`);
     },
   );
 
-  it("formats a local date in en-GB medium style", () => {
-    expect(formatDate(new Date(2026, 0, 15, 12).toISOString())).toBe(
-      "15 Jan 2026",
+  it("formats a calendar date with zero-padded numeric fields", () => {
+    expect(formatDate("2026-01-15")).toBe(
+      "15/01/2026",
     );
   });
 

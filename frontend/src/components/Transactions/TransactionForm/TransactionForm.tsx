@@ -1,4 +1,5 @@
 import type { FormEvent, Ref } from "react";
+import { DateInput } from "../../DateInput/DateInput";
 import type { TransactionDraft } from "../../../domain/transactions";
 import { transactionVariants, type TransactionVariant } from "../variants";
 
@@ -54,17 +55,14 @@ const TransactionForm = ({
       </div>
       <form onSubmit={onSubmit} className='space-y-4'>
         <div className='grid gap-4 sm:grid-cols-2'>
-          <label className='space-y-1.5 text-sm text-slate-200'>
-            <span>Date</span>
-            <input
-              required
-              type='date'
-              value={draft.date}
-              disabled={isBusy}
-              onChange={(event) => onChange("date", event.target.value)}
-              className={`w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white ${styles.fieldFocus}`}
-            />
-          </label>
+          <DateInput
+            label='Date'
+            required
+            value={draft.date}
+            disabled={isBusy}
+            onChange={(value) => onChange("date", value)}
+            className={`w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white ${styles.fieldFocus}`}
+          />
           <label className='space-y-1.5 text-sm text-slate-200'>
             <span>Amount (€) *</span>
             <input
