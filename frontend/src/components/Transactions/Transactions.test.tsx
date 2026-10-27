@@ -150,9 +150,9 @@ describe.each(["expense", "income"] as const)(
       );
       const rows = screen.getAllByRole("listitem");
       expect(
-        within(rows[0]).getByText("15 Jan 2026 · Original note"),
+        within(rows[0]).getByText("15/01/2026 · Original note"),
       ).toBeInTheDocument();
-      expect(within(rows[1]).getByText("15 Jan 2026")).toBeInTheDocument();
+      expect(within(rows[1]).getByText("15/01/2026")).toBeInTheDocument();
       await user.click(screen.getByRole("button", { name: "Edit Original" }));
       await user.click(screen.getByRole("button", { name: "Delete Original" }));
       expect(props.onEdit).toHaveBeenCalledWith(transaction);

@@ -28,7 +28,7 @@ const draft: TransactionDraft = {
 
 function expectDraft(expected: TransactionDraft) {
   const fields = getTransactionFields();
-  expect(fields.date).toHaveValue(expected.date);
+  expect(fields.date).toHaveValue(displayCalendarDate(expected.date));
   expect(fields.amount).toHaveValue(Number(expected.amount));
   expect(fields.category).toHaveValue(expected.category);
   expect(fields.memo).toHaveValue(expected.memo);
@@ -356,3 +356,4 @@ describe.each([
     expect(list().getByText(other.category)).toBeInTheDocument();
   });
 });
+import { displayCalendarDate } from "../domain/transactions/dates";

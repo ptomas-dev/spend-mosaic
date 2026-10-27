@@ -23,6 +23,45 @@ Nullable/omitted notes become empty strings at the boundary. Draft conversion
 requires a date, a finite positive amount, and a nonblank trimmed category;
 note text is preserved. The finite-amount check is not full schema validation.
 
+## Dates
+
+Full dates are displayed and entered as `dd/mm/yyyy` throughout the UI, regardless
+of the browser's locale. Transaction forms and report filters share a text date
+field with a white calendar button and a custom month picker. Dates can be typed
+or selected with the keyboard or mouse; Escape closes the picker and returns focus
+to its button. Invalid and impossible dates are rejected, including non-leap-year
+29 February. Empty dates remain allowed for open-ended report filters.
+
+Valid date fields are converted to `yyyy-mm-dd` internally and in API payloads.
+Partial or invalid input remains visible for correction and cannot be submitted
+or used to generate a report. Display and filtering use the stored calendar-date
+prefix, avoiding timezone shifts between the transaction list, editor and reports.
+Monthly report labels continue to show only the month and year.
+
+## Reports
+
+Reports reuse the expense and income queries and their existing cache invalidation.
+The default range is all time. Optional start and end dates filter both resources
+inclusively and update the report immediately; All time clears both bounds.
+Filtering uses the stored calendar date (the same date shown in the transaction
+editor), without timezone conversion. Reversed ranges and invalid stored dates
+produce explicit errors rather than incomplete summaries.
+
+The page shows income, expenses, and net balance for the selected range, monthly
+comparison bars with a corresponding accessible totals table, and expense totals
+by category. Only months containing matching transactions are shown. Bars use a
+shared absolute-amount scale; the table retains signed values. Currency formatting
+and numeric precision follow the existing transaction contract.
+
+Both resources must load before a report is shown. Refresh data reloads both
+queries and retries failures. Cached reports stay visible during refresh; a failed
+refresh displays the API error and a stale-data warning. No chart dependency or
+backend endpoint is required.
+
+On small screens, navigation sits above the content and scrolls horizontally.
+The monthly totals table scrolls within its own container rather than widening
+the page.
+
 ## API Configuration and Cache
 
 `VITE_API_BASE_URL` is a public, build-time API base URL, not a secret. For example,

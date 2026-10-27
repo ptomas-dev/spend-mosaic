@@ -8,7 +8,7 @@ const Root = () => {
   return (
     <div className='flex flex-col min-h-screen bg-primary text-white'>
       <Header />
-      <div className='flex flex-1'>
+      <div className='flex flex-1 flex-col md:flex-row'>
         <Sidebar />
         <Content>
           <Outlet />

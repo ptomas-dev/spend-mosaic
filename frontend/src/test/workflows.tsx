@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { afterEach } from "vitest";
 import { api } from "../application/api";
 import { createAppStore, type AppStore } from "../application/store";
+import { displayCalendarDate } from "../domain/transactions/dates";
 
 const stores = new Set<AppStore>();
 
@@ -65,7 +66,10 @@ export async function fillTransactionForm(
   for (const field of ["date", "amount", "category", "memo"] as const) {
     await user.clear(fields[field]);
     if (draft[field]) {
-      await user.type(fields[field], draft[field]);
+      await user.type(
+        fields[field],
+        field === "date" ? displayCalendarDate(draft[field]) : draft[field],
+      );
     }
   }
 }

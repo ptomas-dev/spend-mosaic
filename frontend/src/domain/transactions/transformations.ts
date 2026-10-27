@@ -48,7 +48,7 @@ export function draftToPayload(draft: TransactionDraft): TransactionPayload {
   const amount = Number(draft.amount);
   const category = draft.category.trim();
 
-  if (!draft.date || !Number.isFinite(amount) || amount <= 0 || !category) {
+  if (!isCalendarDate(draft.date.slice(0, 10)) || !Number.isFinite(amount) || amount <= 0 || !category) {
     throw new Error("Date, positive amount, and category are required");
   }
 
@@ -59,3 +59,4 @@ export function draftToPayload(draft: TransactionDraft): TransactionPayload {
     memo: draft.memo,
   };
 }
+import { isCalendarDate } from "./dates";

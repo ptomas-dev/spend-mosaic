@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Personal Finance App is a web application designed to help you manage and track your expenses and income. It provides an intuitive interface to add, view, and analyze your financial transactions, along with features for generating reports and tracking balances.
+The Spend Mosaic - Personal Finance App is a web application designed to help you manage and track your expenses and income. It provides an intuitive interface to add, view, and analyze your financial transactions, along with features for generating reports and tracking balances.
 
 ## Technologies Used
 
@@ -49,7 +49,7 @@ The Personal Finance App is a web application designed to help you manage and tr
 
 - **Dashboard**:
   - Overview of total income, total expenses, and current balance.
-  - Basic breakdown of financial data.
+  - Breakdown of expenses by category.
 
 - **Expenses Management**:
   - Add, view, edit, and delete expenses with a date, amount, category, and optional note.
@@ -57,9 +57,10 @@ The Personal Finance App is a web application designed to help you manage and tr
 - **Income Management**:
   - Add, view, edit, and delete income with a date, amount, category, and optional note.
 
-- **Reports** (Upcoming):
-  - Generate simple reports showing income vs. expenses.
-  - Visualize data with charts and graphs.
+- **Reports**:
+  - Filter reports by an inclusive date range or view all time.
+  - Compare monthly income, expenses, and net balance with charts and a totals table.
+  - Review expense totals by category.
 
 ## Milestones
 
@@ -67,20 +68,24 @@ The Personal Finance App is a web application designed to help you manage and tr
 
 - [x] Setup project repository and initial configuration.
 - [x] Develop frontend layout with static header, footer, and sidebar.
-- [x] Implement basic pages with React router: Dashboard, Expenses, Income.
+- [x] Implement routed pages for Dashboard, Expenses, and Income.
 - [x] Set up Redux Toolkit and RTK Query for remote transaction state.
 - [x] Create API endpoints for listing, creating, updating, and deleting expenses and income.
 - [x] Connect the expenses and income pages to the backend API.
-- [ ] Deploy frontend and backend.
 
-### Phase 2: Enhancements
+### Phase 2: Product Experience and Reporting
 
 - [x] Add basic form validation and error handling to expense and income creation.
+- [x] Build the dashboard with income, expense, balance, and category summaries.
 - [ ] Add advanced filtering and sorting options.
-- [ ] Develop dynamic reports and integrate charts.
-- [ ] Add user authentication (JWT-based).
+- [x] Develop dynamic reports and integrate charts.
 
-### Phase 3: Advanced Features
+### Phase 3: Security and Deployment
+
+- [ ] Add JWT-based user authentication and associate transactions with their owners.
+- [ ] Prepare production configuration and deploy the frontend and backend.
+
+### Phase 4: Advanced Features
 
 - [ ] Support for recurring transactions.
 - [ ] Manage multiple financial accounts.

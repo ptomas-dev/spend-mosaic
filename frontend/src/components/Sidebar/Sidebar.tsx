@@ -9,11 +9,11 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className='border-r border-secondary w-64 '>
+    <aside className='w-full border-b border-secondary md:w-64 md:shrink-0 md:border-b-0 md:border-r'>
       <nav aria-label='Main navigation'>
-        <ul className=''>
+        <ul className='flex overflow-x-auto md:block'>
           {navigationItems.map(({ path, label, end }) => (
-            <li key={path}>
+            <li key={path} className='shrink-0'>
               <NavLink
                 to={path}
                 end={end}

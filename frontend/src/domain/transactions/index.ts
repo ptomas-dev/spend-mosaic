@@ -1,5 +1,10 @@
 export { formatCurrency, formatDate } from "./formatting";
 export {
+  createTransactionReport,
+  getReportRangeError,
+  summarizeCategories,
+} from "./reporting";
+export {
   createTransactionDraft,
   draftToPayload,
   normalizeTransaction,
