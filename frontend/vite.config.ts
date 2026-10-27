@@ -9,10 +9,18 @@ export default defineConfig({
       "/expenses": {
         target: "http://localhost:5000",
         changeOrigin: true,
+        bypass(request) {
+          if (request.headers.accept?.includes("text/html"))
+            return "/index.html";
+        },
       },
       "/income": {
         target: "http://localhost:5000",
         changeOrigin: true,
+        bypass(request) {
+          if (request.headers.accept?.includes("text/html"))
+            return "/index.html";
+        },
       },
     },
   },

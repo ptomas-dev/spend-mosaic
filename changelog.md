@@ -14,6 +14,15 @@ All notable changes to this project will be documented in this file. The format 
 - Added confirmed deletion of expenses and income from their lists.
 - Added income editing through the update API and page form.
 - Added expense editing through the update API and page form.
+- Added frontend tests with Vitest, React Testing Library, jsdom, and MSW for CRUD, errors, navigation, transformations, cache, and concurrent operations.
+
+### Changed
+
+- Made sidebar selection follow the router with keyboard-accessible NavLink navigation.
+- Consolidated transaction forms, lists, rows, types, validation, and formatting while preserving expense and income variants.
+- Migrated expense and income CRUD to Redux Toolkit and RTK Query with separate resource invalidation and a configurable public API base URL.
+- Blocked conflicting actions during initial loading, mutations, and refetching to preserve drafts and pending indicators.
+- Kept cached rows visible during refetching and refetch failures, and fixed direct navigation through the Vite API proxy.
 
 ### Security
 
